@@ -1,37 +1,45 @@
 package com.genesys.raa.agg;
 
+import com.genesys.raa.agg.model.Aggregate;
+import com.genesys.raa.agg.model.Definition;
+import com.genesys.raa.agg.model.Tenant;
+import com.genesys.raa.agg.service.AggService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.List;
 
 
-public class StandaloneAggregatorMain extends com.genesys.raa.agg.DefaultAggregatorManager {
+public class StandaloneAggregatorMain extends DefaultAggregatorManager {
 	
 	public static void main(String[] args) throws Exception {
 		ApplicationContext context = new ClassPathXmlApplicationContext("agg-spring.xml");
-		com.genesys.raa.agg.AggConfiguration configuration = (com.genesys.raa.agg.AggConfiguration) context.getBean("configuration");
+
+		Configuration configuration = (Configuration) context.getBean(Configuration.class);
+//		TenantContainer tenantContainer = new TenantContainer(new Tenant());
+
 		long tenantId = 0;
-		com.genesys.raa.agg.AggFactory aggFactory = new com.genesys.raa.agg.AggFactory(configuration);
-		com.genesys.raa.agg.AggEngine aggEngine = aggFactory.getEngine(tenantId);
-		com.genesys.raa.agg.AggService aggService = aggFactory.getService();
+		AggFactory aggFactory =  context.getBean(AggFactory.class);
+		TenantContainer tenantContainer = aggFactory.getEngine(tenantId);
+		tenantContainer.getTenant();
+		tenantContainer.stop();
+		AggService aggService = aggFactory.getService();
 		
-		List<com.genesys.raa.agg.AggDefinition> aggDefinitions = aggFactory.getAggDefinitions();
-		
-		for (int i = 0; i < aggDefinitions.size(); i++) {
-			com.genesys.raa.agg.AggDefinition aggDefinition = aggDefinitions.get(i);
-			com.genesys.raa.agg.Aggregate aggregate = aggService.deployAggregate(
-					aggDefinition.getName(), 
-					aggDefinition.getSelectSql(), 
-					aggDefinition.getGroupByColumns(), 
+		List<Definition> aggDefinitions = aggFactory.getAggDefinitions();
+
+		for (Definition aggDefinition : aggDefinitions) {
+			Aggregate aggregate = aggService.deployAggregate(
+					aggDefinition.getName(),
+					aggDefinition.getSelectSql(),
+					aggDefinition.getGroupByColumns(),
 					aggDefinition.getIndexColumns()
 			);
-			aggEngine.plugAggregate(aggregate);
+			tenantContainer.plugAggregate(aggregate);
 		}
 		
-		aggEngine.start();
+		tenantContainer.start();
 		
-		aggEngine.unplugAggregate("aggregateName");
-		aggEngine.stop();
+		tenantContainer.unplugAggregate("aggregateName");
+		tenantContainer.stop();
 	}
 }

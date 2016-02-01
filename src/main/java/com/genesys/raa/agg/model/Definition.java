@@ -7,6 +7,7 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.genesys.raa.agg.Configuration;
 import com.genesys.raa.agg.TimeScaleUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +16,7 @@ import com.github.davidmoten.rx.jdbc.Database;
 public class Definition {
 	
 	@Autowired
-	com.genesys.raa.agg.AggConfiguration configuration;
+	Configuration configuration;
 	
 	private String aggregateName;
 	private String selectSql;

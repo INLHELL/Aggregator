@@ -4,27 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.genesys.raa.agg.model.Definition;
+import com.genesys.raa.agg.service.AggService;
+import lombok.Data;
 
+@Data
 public class AggFactory {
-	@Autowired
-	AggConfiguration configuration;
-	
+
+	Configuration configuration;
+
 	private static final int DEFAULT_TENANT_ID = 0;
-	
-	public AggFactory(AggConfiguration configuration) {
+
+	public AggFactory(Configuration configuration) {
 		this.configuration = configuration;
 	}
 
-	public AggEngine getEngine() {
+	public TenantContainer getEngine() {
 		return getEngine(DEFAULT_TENANT_ID);
 	}
 	
-	public List<AggDefinition> getAggDefinitions() throws Exception {
+	public List<Definition> getAggDefinitions() throws Exception {
 		Map<String, String> definitions = configuration.getAggregateDefinitions();
-		List<AggDefinition> defs = new ArrayList<AggDefinition>();
+		List<Definition> defs = new ArrayList<Definition>();
 		for ( String aggName : definitions.keySet()) {
-			AggDefinition  definition  = new AggDefinition(
+			Definition  definition  = new Definition(
 					aggName, 
 					definitions.get(aggName), null);
 			defs.add(definition);
@@ -32,7 +35,7 @@ public class AggFactory {
 		return defs;
 	}
 
-	public AggEngine getEngine(long tenantId) {
+	public TenantContainer getEngine(long tenantId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

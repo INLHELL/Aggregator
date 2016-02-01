@@ -6,9 +6,9 @@ import java.util.Properties;
 
 import com.github.davidmoten.rx.jdbc.Database;
 
-public class AggConfiguration {
+public class Configuration {
 
-	public AggConfiguration() {
+	public Configuration() {
 		super();
 	}
 
