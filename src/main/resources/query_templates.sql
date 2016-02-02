@@ -74,3 +74,49 @@ ${GROUP_LEVEL.INDEX} Integer
 	Definition File Name: CAMPAIGN.sql
 	Group: DATE_TIME
 */
+
+
+
+
+/*************************************************/
+
+${PROTOTYPE_SELECT} =
+  SELECT
+    gi.ID AS $IGROUP_ITEM_ID, /* $I<COLUMN_NAME> means that an index will be created for this column */
+    ${GROUP_COLUMNS}, /* e.g. TBL_NAME.COL_NAME AS $GDIMENTION_COL_NAME. $G<NAME> means that it's a group column */
+    ${SUM_COLUMNS}, /* e.g. SUM(<condition>) as $SMETRIC_SUM_COL. $S<NAME> means that it's a sum column */
+    ${COUNT_COLUMNS} /* e.g. COUNT(<condition>) as $CMETRIC_COUNT_COL. $C<NAME> means that it's a count column */
+  FROM
+    GROUP_ITEM gi
+    ${JOIN_TABLES}
+  WHERE
+    gi.ID BETWEEN :FROM_ID TO :TO_ID
+  GROUP BY
+    gi.ID,
+    ${GROUP_COLUMNS}
+
+/*********/
+create table DT_SUBHR_AGENT as ${PROTOTYPE_SELECT}
+
+/*********/
+create table DT_HOUR_AGENT as ${PROTOTYPE_SELECT}
+create table DT_HOUR_AGENT as SELECT * FROM DT_SUBHR_AGENT
+
+
+INSERT INTO DT_HOUR_AGENT
+SELECT
+  dt.DATE_TIME_HOUR_KEY AS DATE_TIME_KEY,
+  TENANT_KEY,
+  ${GROUP_COLUMNS},
+
+  ${SUM_COLUMNS}
+  SUM(INVITE_TIME) as INVITE_TIME
+
+FROM
+  DATE_TIME dt
+  JOIN DT_SUBHR_AGENT agg ON (agg.DATE_TIME_KEY = dt.DATE_TIME_KEY)
+WHERE dt.DATE_TIME_KEY = ?
+GROUP BY dt.DATE_TIME_HOUR_KEY, ${GROUP_COLUMNS}
+
+
+${SRC_SCHEMA}.${AGG_TABLE_NAME[X-1]}
