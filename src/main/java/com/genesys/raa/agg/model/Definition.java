@@ -39,7 +39,7 @@ public class Definition {
 		PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
 		ResultSetMetaData metaData = preparedStatement.getMetaData();
 		if(!metaData.getColumnName(1).equals("intervalId")) {
-			throw new Exception("Can't find 'intervalId' column in selectSql. Column 'intervalId' must be the first column in selectSql");
+			throw new Exception("Can't find 'intervalId' column in selectSql. ColumnMetaData 'intervalId' must be the first column in selectSql");
 		}
 		
 		ParameterMetaData parameterMetaData = preparedStatement.getParameterMetaData();

@@ -1,19 +1,22 @@
 package com.genesys.raa.agg.prototype;
 
+import com.genesys.raa.agg.sql.ColumnGroupType;
+import com.genesys.raa.agg.sql.ColumnMetaData;
+import freemarker.template.*;
+
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 
 public class AggregatorAllInOne {
 
-    public static void main(String[] args) throws IOException, SQLException {
+    public static void main(String[] args) throws IOException, SQLException, TemplateException {
         System.out.println("-------- Oracle JDBC Connection Testing ------");
 
         try {
@@ -62,8 +65,79 @@ public class AggregatorAllInOne {
         /*
         CREATE AGGREGATE TABLE(S)
          */
+        Set<ColumnMetaData> columnMetaDatas = new HashSet<>();
         String aggSelectQuery = new String(Files.readAllBytes(Paths.get("src/test/resources/AGENT.sql")));
-        String createTableQuery = "CREATE TABLE DT_SUBHR_AGENT AS " + aggSelectQuery.replaceAll("\\?", "-1");
+        String selectQuery = aggSelectQuery.replaceAll("\\?", "-1");
+        PreparedStatement selectStatement = connection.prepareStatement(selectQuery);
+        ResultSetMetaData metaData = selectStatement.getMetaData();
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+            String columnName =  metaData.getColumnName(i);
+            ColumnGroupType columnGroupType = ColumnGroupType.NONE;
+            if(columnName.contains(ColumnGroupType.COUNT.toString())) {
+                columnName = columnName.replace(ColumnGroupType.COUNT.toString(), "");
+                columnGroupType = ColumnGroupType.COUNT;
+            }
+            if(columnName.contains(ColumnGroupType.SUM.toString())) {
+                columnName = columnName.replace(ColumnGroupType.SUM.toString(), "");
+                columnGroupType = ColumnGroupType.SUM;
+            }
+            if(columnName.contains(ColumnGroupType.GROUP_BY.toString())) {
+                columnName = columnName.replace(ColumnGroupType.GROUP_BY.toString(), "");
+                columnGroupType = ColumnGroupType.GROUP_BY;
+            }
+            boolean isIndexed = columnName.contains("$I");
+            columnName = columnName.replace("$I", "");
+
+            System.out.println(metaData.getColumnName(i));
+            System.out.println(metaData.getColumnType(i));
+
+            ColumnMetaData columnMetaData = new ColumnMetaData(i, columnName, metaData.getColumnLabel(i), metaData
+                    .getColumnType(i), metaData.getColumnTypeName(i), columnGroupType, isIndexed);
+            columnMetaDatas.add(columnMetaData);
+        }
+
+//        Definition definition = new Definition();
+
+
+        // 1. Configure FreeMarker
+        //
+        // You should do this ONLY ONCE, when your application starts,
+        // then reuse the same Configuration object elsewhere.
+
+        Configuration cfg = new Configuration();
+
+        // Where do we load the templates from:
+//        cfg.setClassForTemplateLoading(AggregatorAllInOne.class, "test/java/resources");
+        cfg.setDirectoryForTemplateLoading(new File("src/test/resources"));
+
+        // Some other recommended settings:
+        cfg.setIncompatibleImprovements(new Version(2, 3, 20));
+        cfg.setDefaultEncoding("UTF-8");
+        cfg.setLocale(Locale.US);
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+
+        // 2. Proccess template(s)
+        //
+        // You will do this for several times in typical applications.
+
+        // 2.1. Prepare the template input:
+
+        Map<String, Object> input = new HashMap<String, Object>();
+
+        input.put("date_time_key", "1000");
+        input.put("group", "GRP_");
+        input.put("sum", "SUM_");
+
+        // 2.2. Get the template
+
+        Template template = cfg.getTemplate("AGENT.ftl");
+
+        // Write output to the console
+        Writer consoleWriter = new OutputStreamWriter(System.out);
+        template.process(input, consoleWriter);
+
+
+        String createTableQuery = "CREATE TABLE DT_SUBHR_AGENT AS " + selectQuery;
         PreparedStatement createTableStatement = connection.prepareStatement(createTableQuery);
         createTableStatement.executeUpdate();
 

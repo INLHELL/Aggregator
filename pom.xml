@@ -88,5 +88,11 @@
             <artifactId>spring-data-oracle</artifactId>
             <version>1.2.1.RELEASE</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.20</version>
+        </dependency>
     </dependencies>
 </project>

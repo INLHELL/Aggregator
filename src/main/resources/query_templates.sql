@@ -33,7 +33,7 @@ ${GROUP_LEVEL.INDEX} Integer
 
 /* ***********************
 	AGGREGATE TABLE NAMING TEMPLATE
-	${AGG_TABLE_NAME[GROUP_LEVEL.INDEX]}
+	${AGG_TABLE_NAME[GROUP_LEVEL.INDEXED]}
 */
 	${AGG_SCHEMA}.${GROUP.CODE}_${GROUP_LEVEL.CODE}_${AGG_NAME}
 
@@ -47,10 +47,10 @@ ${GROUP_LEVEL.INDEX} Integer
 	POPULATE AGGREGATE TABLES
 	${AGG_INSERT}
 */
--- GROUP_LEVEL.INDEX == 0
+-- GROUP_LEVEL.INDEXED == 0
 	INSERT INTO ${AGG_SCHEMA}.${AGG_TABLE_NAME[0]} ${AGG_SELECT}
 
--- GROUP_LEVEL.INDEX > 0 = X
+-- GROUP_LEVEL.INDEXED > 0 = X
 	INSERT INTO ${AGG_TABLE_NAME[X]}
 		( GROUP_ITEM_ID, ${GROUP_COLUMNS}, ${SUM_COLUMNS} )
 	SELECT
@@ -120,3 +120,29 @@ GROUP BY dt.DATE_TIME_HOUR_KEY, ${GROUP_COLUMNS}
 
 
 ${SRC_SCHEMA}.${AGG_TABLE_NAME[X-1]}
+
+--
+
+SELECT
+    $date_time_key,
+    #foreach ($column in $group_columns)
+      $column.name
+    #end
+
+  a.last_name,
+  count(*)
+FROM
+  t_author a
+LEFT OUTER JOIN
+  t_book b ON a.id = b.author_id
+WHERE
+  1 = 0
+#foreach ($param in $p)
+  OR a.id = ?
+#end
+GROUP BY
+  a.first_name,
+  a.last_name
+ORDER BY
+  a.id ASC
+
