@@ -2,7 +2,7 @@ package com.genesys.raa.agg.service;
 
 import java.util.List;
 
-import com.genesys.raa.agg.AggConfiguration;
+import com.genesys.raa.agg.Configuration;
 import com.genesys.raa.agg.AggSqlBuilder;
 import com.genesys.raa.agg.AggSynchronizer;
 import com.genesys.raa.agg.TimeScaleUnit;
@@ -16,7 +16,7 @@ import com.github.davidmoten.rx.jdbc.Database;
 public class AggService {
 	
 	@Autowired
-	AggConfiguration configuration;
+	Configuration configuration;
 	
 	Database database = configuration.getDatabase();  
 
@@ -88,10 +88,11 @@ public class AggService {
 			String aggregateName,
 			String aggregateDefinitionSql, 
 			List<String> aggregateGroupbyColumns,
-			List<String> aggregateIndexColumns)
+			List<String> aggregateIndexColumns) throws Exception
 	{
-		Aggregate aggregate = null;
-		if(isAggregateExists(aggregateName)) {
+		Aggregate aggregate = new Aggregate();
+
+ 		if(isAggregateExists(aggregateName)) {
 			AggSynchronizer synchronizer = null;
 			synchronizer.synchronizeTables();
 			synchronizer.synchronizeIndexes();

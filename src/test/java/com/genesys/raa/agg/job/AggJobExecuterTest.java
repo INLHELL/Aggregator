@@ -6,9 +6,12 @@ import org.junit.Before;
 /**
  * Created by SPIDER on 21.01.2016.
  */
+
 public class AggJobExecuterTest {
+    private final int test = 10;
 
     @Before
+    @Test(test)
     public void setUp() throws Exception {
 
     }

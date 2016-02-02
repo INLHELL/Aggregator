@@ -1,6 +1,8 @@
 package com.genesys.raa.agg;
 
 
+import com.genesys.raa.agg.model.Aggregate;
+
 public class AggSqlBuilder {
 	
 	private Aggregate aggregate;

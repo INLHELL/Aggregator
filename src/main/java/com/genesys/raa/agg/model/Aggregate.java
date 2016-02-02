@@ -5,8 +5,12 @@ import java.util.List;
 
 public class Aggregate extends Definition {
 
+	public Aggregate() throws Exception {
+		super(null, null, null);
+	}
+
 	public Aggregate(String aggregateName, String selectSql,
-			List<String> groupColumns) throws Exception {
+					 List<String> groupColumns) throws Exception {
 		super(aggregateName, selectSql, groupColumns);
 		// TODO Auto-generated constructor stub
 	}
