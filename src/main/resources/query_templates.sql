@@ -17,9 +17,10 @@ ${GROUP_LEVEL.INDEX} Integer
 	${AGG_SELECT}
 */
 	SELECT
-		gi.ID AS GROUP_ITEM_ID,
-		${GROUP_COLUMNS},
-		${SUM_COLUMNS}
+		gi.ID AS $IGROUP_ITEM_ID, /* $I<COLUMN_NAME> means that an index will be created for this column */
+		${GROUP_COLUMNS}, /* e.g. TBL_NAME.COL_NAME AS $GDIMENTION_COL_NAME. $G<NAME> means that it's a group column */
+		${SUM_COLUMNS}, /* e.g. SUM(<condition>) as $SMETRIC_SUM_COL. $S<NAME> means that it's a sum column */
+		${COUNT_COLUMNS} /* e.g. COUNT(<condition>) as $CMETRIC_COUNT_COL. $C<NAME> means that it's a count column */
 	FROM
 		GROUP_ITEM gi
 	${JOIN_TABLES}
