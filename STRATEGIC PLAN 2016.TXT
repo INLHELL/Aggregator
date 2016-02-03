@@ -1,0 +1,28 @@
+A-team tasks for Existing aggregator:
+* Support for usability questions
+* Fix critical problems (if possible in short time)
+* Develop minor improvements, if it's realy needed by customer(s)
+* VIP cmd tools -listTables -showQueries - why it is so important? We need to answer on this question in details,
+    ===>>> because this is about RA and A integration on technical and management level. We can significadnt improve  <<<===
+
+New aggregator:
+* General development strategy and common base line
+* We have to agree with next concept: on all technical and management levels
+    RAA formally has to be split to RA-scope and A-scope, means that:
+    * "A" provides a native way to plug new aggregate definition as just select statement from .sql file
+    * "A" provides REST-interface to communicate with
+    * "RA"-team develops select-queries, tune it from DBA point of view and plug new aggregate definitions to "A"
+    * "RA"-team develops DDL-scripts with additional reporting tables and views
+    * "RAA" provides a way to distribute reporting DDL-scripts within "RAA destribution package"
+    * "A" provides as clean as possible information about its working status
+    ===>>>> ??? * "A" is written enough intelligent to provide  as clean as possible information about its working status
+
+* A development plan has to be aligned with the Platform Release Plan
+* What about cloud? What about decreasing infrastructure rental costs?
+* What about a platform integration and public API
+* What about GIM with MySql/MariaDB?
+* Would it be possible that "A" will be passed to RA-team for development (ofcourse with A-team common support)?
+
+* What about RA development plans? Does RA have that plans?
+
+* What about A and RA dev. plans alignment?
