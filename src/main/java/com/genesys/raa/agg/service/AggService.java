@@ -2,7 +2,6 @@ package com.genesys.raa.agg.service;
 
 import java.util.List;
 
-import com.genesys.raa.agg.Configuration;
 import com.genesys.raa.agg.AggSqlBuilder;
 import com.genesys.raa.agg.AggSynchronizer;
 import com.genesys.raa.agg.TimeScaleUnit;
@@ -17,10 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AggService {
 	
-	@Autowired
-	Configuration configuration;
-	
-	Database database = configuration.getDatabase();  
+	//Database database = configuration.getDatabase();
 
 	public void aggregateInterval(String aggregateName, long intervalId) {
 		
@@ -114,11 +110,11 @@ public class AggService {
 	}
 	
 	public boolean isAggregateExists(String aggregateName) {
-		if(database.select("select count(*) from AGGREGATE where name = ?")
+		/*if(database.select("select count(*) from AGGREGATE where name = ?")
 				.parameter(aggregateName)
 				.getAs(Integer.class).toSingle().equals(1) ) {
 			return true;
-		}
+		}*/
 		return false;
 	}
 }

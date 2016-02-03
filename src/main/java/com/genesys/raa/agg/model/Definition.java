@@ -7,7 +7,6 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.genesys.raa.agg.Configuration;
 import com.genesys.raa.agg.TimeScaleUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,9 +16,6 @@ import javax.persistence.Entity;
 
 @Entity
 public class Definition {
-	
-	@Autowired
-	Configuration configuration;
 	
 	private String aggregateName;
 	private String selectSql;
@@ -36,7 +32,8 @@ public class Definition {
 		this.selectSql = selectSql;
 		this.groupColumns = groupColumns;
 		
-		Database database = configuration.getDatabase();
+		//Database database = configuration.getDatabase();
+		Database database = null;
 		Connection connection = database.getConnectionProvider().get();
 		
 		PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
@@ -67,12 +64,12 @@ public class Definition {
 	 * @param scaleUnit
 	 * @return name of the table in which an aggregated data is stored for this time scale  
 	 */
-	public String getTableName(TimeScaleUnit scaleUnit ) {
+	/*public String getTableName(TimeScaleUnit scaleUnit ) {
 		 
 		String tablePrefix = configuration.getDatabaseTablePrefix();
 		String tableName = tablePrefix + "_" + aggregateName + "_" + scaleUnit.toString();
 		return tableName;
-	}
+	}*/
 	
 	/**
 	 * @return the name

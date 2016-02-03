@@ -1,12 +1,17 @@
 package com.genesys.raa.agg;
 
-import org.springframework.context.annotation.*;
 
-@org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.sql.Connection;
+
+@Configuration
 public class AppConfig {
 
     @Bean
-    public Configuration getConfiguration(){
-        return new Configuration();
+    Connection getConnection() {
+        return null;
     }
+
 }

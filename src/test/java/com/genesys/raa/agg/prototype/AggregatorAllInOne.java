@@ -2,7 +2,7 @@ package com.genesys.raa.agg.prototype;
 
 import com.genesys.raa.agg.definition.ColumnGroupType;
 import com.genesys.raa.agg.definition.ColumnMetaData;
-import freemarker.template.*;
+//import freemarker.template.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +16,7 @@ import java.util.*;
 
 public class AggregatorAllInOne {
 
+/*
     public static void main(String[] args) throws IOException, SQLException, TemplateException {
         System.out.println("-------- Oracle JDBC Connection Testing ------");
 
@@ -62,9 +63,11 @@ public class AggregatorAllInOne {
 
 
 
-        /*
+        */
+/*
         CREATE AGGREGATE TABLE(S)
-         */
+         *//*
+
         Set<ColumnMetaData> columnMetaDatas = new HashSet<>();
         String aggSelectQuery = new String(Files.readAllBytes(Paths.get("src/test/resources/AGENT.sql")));
         String selectQuery = aggSelectQuery.replaceAll("\\?", "-1");
@@ -141,9 +144,11 @@ public class AggregatorAllInOne {
         PreparedStatement createTableStatement = connection.prepareStatement(createTableQuery);
         createTableStatement.executeUpdate();
 
-        /*
+        */
+/*
         POPULATE AGGREGATE TABLE
-         */
+         *//*
+
         List<Integer> dateTimeKeys = Arrays.asList(1454137200, 1454136300, 1454135400, 1454134500, 1454133600);
         String insertSelectQuery = "INSERT INTO DT_SUBHR_AGENT " + aggSelectQuery;
         PreparedStatement insertSelectStatement = connection.prepareStatement(insertSelectQuery);
@@ -158,4 +163,5 @@ public class AggregatorAllInOne {
             }
         }
     }
+*/
 }

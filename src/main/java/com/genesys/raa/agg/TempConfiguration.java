@@ -6,9 +6,9 @@ import java.util.Properties;
 
 import com.github.davidmoten.rx.jdbc.Database;
 
-public class Configuration {
+public class TempConfiguration {
 
-	public Configuration() {
+	public TempConfiguration() {
 		super();
 	}
 

@@ -19,13 +19,15 @@ public class JobExecuter {
 
 	Aggregate aggregate;
 
+	public JobExecuter() {}
+
 	public JobExecuter(Aggregate aggregate) {
 		this.aggregate = aggregate;
 	}
 	
 	public void execute() throws Exception {
 		
-		Job job = aggService.acquireNextJobFor(aggregate.getName());
+		/*Job job = aggService.acquireNextJobFor(aggregate.getName());
 		
 		TimeInterval interval = job.getInterval();
 		
@@ -50,7 +52,7 @@ public class JobExecuter {
 			job.setLastExecMessage(failReason);
 			aggService.updateJob(job);
 			throw new Exception();
-		}
+		}*/
 	}
 
 }

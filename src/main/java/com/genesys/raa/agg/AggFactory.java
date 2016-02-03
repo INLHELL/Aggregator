@@ -11,19 +11,14 @@ import lombok.Data;
 @Data
 public class AggFactory {
 
-	Configuration configuration;
 
 	private static final int DEFAULT_TENANT_ID = 0;
-
-	public AggFactory(Configuration configuration) {
-		this.configuration = configuration;
-	}
 
 	public TenantContainer getEngine() {
 		return getEngine(DEFAULT_TENANT_ID);
 	}
 	
-	public List<Definition> getAggDefinitions() throws Exception {
+	/*public List<Definition> getAggDefinitions() throws Exception {
 		Map<String, String> definitions = configuration.getAggregateDefinitions();
 		List<Definition> defs = new ArrayList<Definition>();
 		for ( String aggName : definitions.keySet()) {
@@ -33,7 +28,7 @@ public class AggFactory {
 			defs.add(definition);
 		}
 		return defs;
-	}
+	}*/
 
 	public TenantContainer getEngine(long tenantId) {
 		// TODO Auto-generated method stub

@@ -23,7 +23,7 @@ public class AggSqlBuilder {
 	
 	public AggSqlBuilder insertSelect(TimeScaleUnit timeScale) {
 		
-		String aggScaleTable = aggregate.getTableName(timeScale);
+		/*String aggScaleTable = aggregate.getTableName(timeScale);
 		String aggSubscaleTable = aggregate.getTableName(TimeScaleUnit.getSubscaleUnit(timeScale));
 		
 		if(aggSubscaleTable == null) {
@@ -43,7 +43,7 @@ public class AggSqlBuilder {
 			
 		}
 		
-		sql += ";\n";
+		sql += ";\n";*/
 		
 		return this;
 	}
