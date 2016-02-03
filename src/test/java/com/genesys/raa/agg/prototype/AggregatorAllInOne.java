@@ -2,6 +2,9 @@ package com.genesys.raa.agg.prototype;
 
 import com.genesys.raa.agg.definition.ColumnGroupType;
 import com.genesys.raa.agg.definition.ColumnMetaData;
+import com.genesys.raa.agg.model.Definition;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import freemarker.template.*;
 
 import java.io.File;
@@ -98,7 +101,7 @@ public class AggregatorAllInOne {
             columnMetaDatas.add(columnMetaData);
         }
 
-//        Definition definition = new Definition();
+        Definition definition = new Definition();
 
 
         // 1. Configure FreeMarker

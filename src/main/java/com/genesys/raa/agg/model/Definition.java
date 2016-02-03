@@ -1,18 +1,14 @@
 package com.genesys.raa.agg.model;
 
+import com.github.davidmoten.rx.jdbc.Database;
+
+import javax.persistence.Entity;
 import java.sql.Connection;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.genesys.raa.agg.TimeScaleUnit;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.github.davidmoten.rx.jdbc.Database;
-
-import javax.persistence.Entity;
 
 @Entity
 public class Definition {
