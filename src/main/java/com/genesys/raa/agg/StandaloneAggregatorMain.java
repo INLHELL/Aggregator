@@ -1,20 +1,16 @@
 package com.genesys.raa.agg;
 
-import com.genesys.raa.agg.model.Aggregate;
-import com.genesys.raa.agg.model.Definition;
-import com.genesys.raa.agg.model.Tenant;
-import com.genesys.raa.agg.service.AggService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.ImportResource;
 
 import java.util.Arrays;
-import java.util.List;
 
 
 
 @SpringBootApplication
+@ImportResource("classpath:spring-agg.xml")
 public class StandaloneAggregatorMain {
 
 	public static void main(String[] args) {
@@ -35,7 +31,7 @@ public class StandaloneAggregatorMain {
 public class StandaloneAggregatorMain extends DefaultAggregatorManager {
 	
 	public static void main(String[] args) throws Exception {
-		ApplicationContext context = new ClassPathXmlApplicationContext("agg-spring.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring-agg.xml");
 
 		Configuration configuration = (Configuration) context.getBean(Configuration.class);
 //		TenantContainer tenantContainer = new TenantContainer(new Tenant());

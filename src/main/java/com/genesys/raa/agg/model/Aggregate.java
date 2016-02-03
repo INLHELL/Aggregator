@@ -1,10 +1,9 @@
 package com.genesys.raa.agg.model;
 
-import javax.persistence.Entity;
 import java.sql.PreparedStatement;
 import java.util.List;
 
-@Entity
+//@Entity
 public class Aggregate {
 
 	public Aggregate() throws Exception {

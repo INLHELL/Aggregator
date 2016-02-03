@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--<context:component-scan base-package="com.genesys.raa.**"/>-->
+
+
+    <!--&lt;!&ndash; <bean id="bus" class="com">-->
+    <!--<property name="service" ref="serviceBean" />-->
+
+    <!--</beans>&ndash;&gt;-->
+
+    <!--<bean id="configuration" class="com.genesys.raa.agg.Configuration"/>-->
+
+    <!--<bean id="aggFactory" class="com.genesys.raa.agg.AggFactory">-->
+    <!--<constructor-arg ref="configuration"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="tenantManager" class="com" factory-bean="affFactory" factory-method="getManger" init-method="" />-->
+
+    <!--<bean id="serviceBean" />-->
+    <!---->
+
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>agg.properties</value>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">create</prop>
+                <prop key="hibernate.validator.autoregister_listeners">false</prop>
+            </props>
+        </property>
+
+        <property name="packagesToScan">
+            <array>
+                <value>com.genesys.raa.agg.model</value>
+            </array>
+        </property>
+
+
+    </bean>
+</beans>

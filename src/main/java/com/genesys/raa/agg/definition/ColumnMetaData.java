@@ -2,9 +2,11 @@ package com.genesys.raa.agg.definition;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @Getter
+@ToString
 public class ColumnMetaData {
 
     private int positionNumber;

@@ -1,20 +1,27 @@
 package com.genesys.raa.agg.definition;
 
+import lombok.Getter;
+
 //@ToString
+@Getter
 public enum ColumnGroupType {
-    NONE(""),
-    GROUP_BY("$G"),
-    SUM("$S"),
-    COUNT("$C");
+    NONE("","NONE"),
+    GROUP_BY("$G","GROUP"),
+    SUM("$S","SUM"),
+    COUNT("$C","COUNT");
 
-    private String def;
+    private String value;
+    private String description;
 
-    ColumnGroupType(String def) {
-        this.def = def;
+    ColumnGroupType(String value, String description) {
+        this.value = value;
+        this.description = description;
     }
+
+
 
     @Override
     public String toString() {
-        return def;
+        return description;
     }
 }

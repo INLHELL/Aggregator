@@ -1,21 +1,15 @@
 package com.genesys.raa.agg.job;
 
 import com.genesys.raa.agg.model.Aggregate;
-import com.genesys.raa.agg.model.Job;
 import com.genesys.raa.agg.service.AggService;
-import com.genesys.raa.agg.AggSqlBuilder;
-import com.genesys.raa.agg.TimeInterval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.sql.PreparedStatement;
 
 @Component
 public class JobExecuter {
 
 	@Autowired
 	AggService aggService;
-
 
 	Aggregate aggregate;
 
@@ -26,7 +20,7 @@ public class JobExecuter {
 	}
 	
 	public void execute() throws Exception {
-		
+
 		/*Job job = aggService.acquireNextJobFor(aggregate.getName());
 		
 		TimeInterval interval = job.getInterval();

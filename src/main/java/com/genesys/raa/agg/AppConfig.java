@@ -10,7 +10,7 @@ import java.sql.Connection;
 public class AppConfig {
 
     @Bean
-    Connection getConnection() {
+    public Connection getConnection() {
         return null;
     }
 
