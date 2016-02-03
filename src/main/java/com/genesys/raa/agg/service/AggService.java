@@ -12,7 +12,9 @@ import com.genesys.raa.agg.model.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.davidmoten.rx.jdbc.Database;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AggService {
 	
 	@Autowired

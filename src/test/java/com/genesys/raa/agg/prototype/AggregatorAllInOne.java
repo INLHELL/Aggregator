@@ -1,7 +1,7 @@
 package com.genesys.raa.agg.prototype;
 
-import com.genesys.raa.agg.sql.ColumnGroupType;
-import com.genesys.raa.agg.sql.ColumnMetaData;
+import com.genesys.raa.agg.definition.ColumnGroupType;
+import com.genesys.raa.agg.definition.ColumnMetaData;
 import freemarker.template.*;
 
 import java.io.File;

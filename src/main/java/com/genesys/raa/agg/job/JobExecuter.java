@@ -5,13 +5,23 @@ import com.genesys.raa.agg.model.Job;
 import com.genesys.raa.agg.service.AggService;
 import com.genesys.raa.agg.AggSqlBuilder;
 import com.genesys.raa.agg.TimeInterval;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 
-public class AggJobExecuter {
-	
+@Component
+public class JobExecuter {
+
+	@Autowired
 	AggService aggService;
+
+
 	Aggregate aggregate;
+
+	public JobExecuter(Aggregate aggregate) {
+		this.aggregate = aggregate;
+	}
 	
 	public void execute() throws Exception {
 		

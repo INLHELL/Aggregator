@@ -1,4 +1,4 @@
-package com.genesys.raa.agg.sql;
+package com.genesys.raa.agg.definition;
 
 //@ToString
 public enum ColumnGroupType {

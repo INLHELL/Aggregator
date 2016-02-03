@@ -3,6 +3,9 @@ package com.genesys.raa.agg.model;
 
 import com.genesys.raa.agg.TimeInterval;
 
+import javax.persistence.Entity;
+
+@Entity
 public class Job {
 	
 	long jobId;
