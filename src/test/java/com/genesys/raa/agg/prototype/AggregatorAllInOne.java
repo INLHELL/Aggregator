@@ -2,13 +2,19 @@ package com.genesys.raa.agg.prototype;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.genesys.raa.agg.StandaloneAggregatorMain;
 import com.genesys.raa.agg.definition.ColumnGroupType;
 import com.genesys.raa.agg.definition.ColumnMetaData;
 import com.genesys.raa.agg.model.Definition;
+import com.genesys.raa.agg.persistence.DefinitionPersistence;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Sets;
 import freemarker.template.TemplateException;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ImportResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +26,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
+@SpringBootApplication
+@ImportResource("classpath:spring-agg.xml")
 public class AggregatorAllInOne {
 
     public static void main(String[] args) throws IOException, SQLException, TemplateException {
+
+        ApplicationContext ctx = SpringApplication.run(StandaloneAggregatorMain.class, args);
+
         System.out.println("-------- Oracle JDBC Connection Testing ------");
 
         try {
@@ -119,13 +130,27 @@ public class AggregatorAllInOne {
             }
 
 
-            Definition definition = new Definition(aggregateName, selectQuery, columnGroups);
+            Definition definition = new Definition(aggregateName, selectQuery, "" /* TODO */);
             definitions.add(definition);
 
-        ObjectMapper mapper = new ObjectMapper().registerModule(new GuavaModule());;
+        ObjectMapper mapper = new ObjectMapper().registerModule(new GuavaModule());
         String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(columnGroups);
         System.out.println(jsonInString);
         }
+
+        final DefinitionPersistence definitionPersistence = ctx.getBean(DefinitionPersistence.class);
+
+        Definition d = definitionPersistence.findByName("AGENT");
+        System.out.print(d);
+
+        for(Definition definition : definitions) {
+            definitionPersistence.save(definition);
+        }
+
+
+
+
+
 
 
 

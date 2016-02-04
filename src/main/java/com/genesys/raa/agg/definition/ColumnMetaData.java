@@ -9,14 +9,13 @@ import lombok.ToString;
 @ToString
 public class ColumnMetaData {
 
-    private int positionNumber;
+    private int position;
     private String name;
     private String label;
     private int type;
     private String typeName;
     private ColumnGroupType groupType;
     private boolean indexed;
-
 
     public boolean isGroupBy() {
         return groupType == ColumnGroupType.GROUP_BY;

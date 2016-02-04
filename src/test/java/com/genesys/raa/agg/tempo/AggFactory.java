@@ -1,10 +1,5 @@
-package com.genesys.raa.agg;
+package com.genesys.raa.agg.tempo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.genesys.raa.agg.model.Definition;
 import com.genesys.raa.agg.service.AggService;
 import lombok.Data;
 

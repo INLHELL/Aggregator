@@ -1,14 +1,14 @@
 package com.genesys.raa.agg.model;
 
 
-import com.genesys.raa.agg.TimeInterval;
+//import com.genesys.raa.agg.TimeInterval;
 
 //@Entity
 public class Job {
 	
 	long jobId;
 	String aggregateName;
-	TimeInterval interval;
+//	TimeInterval interval;
 	String lastExecMessage;
 	
 	
@@ -30,12 +30,13 @@ public class Job {
 	public long getJobId() {
 		return jobId;
 	}
+
 	/**
 	 * @return the interval
 	 */
-	public TimeInterval getInterval() {
+	/*public TimeInterval getInterval() {
 		return interval;
 	}
-	
+	*/
 
 }

@@ -1,17 +1,15 @@
 package com.genesys.raa.agg.service;
 
-import java.util.List;
-
-import com.genesys.raa.agg.AggSqlBuilder;
-import com.genesys.raa.agg.AggSynchronizer;
-import com.genesys.raa.agg.TimeScaleUnit;
 import com.genesys.raa.agg.model.Aggregate;
 import com.genesys.raa.agg.model.Definition;
 import com.genesys.raa.agg.model.Job;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.github.davidmoten.rx.jdbc.Database;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/*import com.genesys.raa.agg.AggSqlBuilder;
+import com.genesys.raa.agg.AggSynchronizer;
+import com.genesys.raa.agg.TimeScaleUnit;*/
 
 @Service
 public class AggService {
@@ -90,7 +88,7 @@ public class AggService {
 	{
 		Aggregate aggregate = new Aggregate();
 
- 		if(isAggregateExists(aggregateName)) {
+ 		/*if(isAggregateExists(aggregateName)) {
 			AggSynchronizer synchronizer = null;
 			synchronizer.synchronizeTables();
 			synchronizer.synchronizeIndexes();
@@ -103,7 +101,7 @@ public class AggService {
 				.createTable(TimeScaleUnit.WEEK)
 				.createTable(TimeScaleUnit.YEAR)
 				.sql();
-		}
+		}*/
 		String[] columns = null;
 		aggregate.setColumns(columns);
 		return aggregate;

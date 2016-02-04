@@ -1,4 +1,4 @@
-package com.genesys.raa.agg;
+package com.genesys.raa.agg.tempo;
 
 
 import com.genesys.raa.agg.model.Aggregate;

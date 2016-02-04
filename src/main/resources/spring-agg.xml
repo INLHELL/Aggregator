@@ -17,7 +17,7 @@
 
     <!--<bean id="configuration" class="com.genesys.raa.agg.Configuration"/>-->
 
-    <!--<bean id="aggFactory" class="com.genesys.raa.agg.AggFactory">-->
+    <!--<bean id="aggFactory" class="com.genesys.raa.agg.tempo.AggFactory">-->
     <!--<constructor-arg ref="configuration"/>-->
     <!--</bean>-->
 

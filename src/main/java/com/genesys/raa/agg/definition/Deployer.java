@@ -13,7 +13,7 @@ import java.sql.Connection;
  * Created by SPIDER on 03.02.2016.
  */
 @Component
-public class DefinitionDeployer {
+public class Deployer {
 
     @Setter
     @Autowired
