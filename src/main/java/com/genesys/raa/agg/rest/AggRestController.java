@@ -1,4 +1,4 @@
-package com.genesys.raa.agg.service;
+package com.genesys.raa.agg.rest;
 
 import com.genesys.raa.agg.persistence.JobPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-public class AggServiceRestController {
+public class AggRestController {
 
     @Autowired
     JobPersistence jobPersistence;
