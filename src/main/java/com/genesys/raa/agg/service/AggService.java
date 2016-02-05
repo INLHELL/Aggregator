@@ -102,8 +102,8 @@ public class AggService {
 				.createTable(TimeScaleUnit.YEAR)
 				.sql();
 		}*/
-		String[] columns = null;
-		aggregate.setColumns(columns);
+		/*String[] columns = null;
+		aggregate.setColumns(columns);*/
 		return aggregate;
 	}
 	
