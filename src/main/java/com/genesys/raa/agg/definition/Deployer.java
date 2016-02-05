@@ -7,21 +7,16 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-
 /**
  * Created by SPIDER on 03.02.2016.
  */
 @Component
 public class Deployer {
 
-    @Setter
-    @Autowired
-    Connection connection;
 
     @Setter
     @Autowired
-    AggService aggService;
+    private AggService aggService;
 
     void deployDefinition(Definition definition) throws InvalidColumnMetaDataCombinationException {
         /*

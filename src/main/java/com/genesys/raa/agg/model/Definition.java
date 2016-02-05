@@ -1,19 +1,18 @@
 package com.genesys.raa.agg.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.genesys.raa.agg.definition.SqlMetaData;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name = "DEFINITION")
 @Access(AccessType.FIELD)
+/*
 @TypeDefs({
         @TypeDef(name = "SqlMetaData", typeClass = SqlMetaData.class)
 })
+*/
+@Data
 public class Definition {
 
     @Id
@@ -31,7 +30,7 @@ public class Definition {
     @Column(nullable = false)
     private String sql;
 
-    @Type(type = "SqlMetaData")
+    //@Type(type = "SqlMetaData")
     private String sqlMetaData;
 
     /*
@@ -53,7 +52,7 @@ public class Definition {
 //    private int parametersCount;
 //    private int queryCost;
 
-    public Definition(String name, String sql, String sqlMetaData) throws JsonProcessingException {
+    public Definition(String name, String sql, String sqlMetaData) {
         this.name = name;
         this.sql = sql;
         this.sqlMetaData = sqlMetaData;

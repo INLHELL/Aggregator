@@ -14,18 +14,18 @@ public class ColumnMetaData {
     private String label;
     private int type;
     private String typeName;
-    private ColumnGroupType groupType;
+    private ColumnType groupType;
     private boolean indexed;
 
     public boolean isGroupBy() {
-        return groupType == ColumnGroupType.GROUP_BY;
+        return groupType == ColumnType.GROUP_BY;
     }
 
     public boolean isSum() {
-        return groupType == ColumnGroupType.SUM;
+        return groupType == ColumnType.SUM;
     }
 
     public boolean isCount() {
-        return groupType == ColumnGroupType.COUNT;
+        return groupType == ColumnType.COUNT;
     }
 }
