@@ -15,6 +15,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 
 @SpringBootApplication
 @ImportResource("classpath:spring-agg.xml")
+@EnableScheduling
 public class AggregatorAllInOne {
 
     public static void main(String[] args) throws IOException, SQLException, TemplateException {
@@ -140,13 +142,12 @@ public class AggregatorAllInOne {
 
         final DefinitionPersistence definitionPersistence = ctx.getBean(DefinitionPersistence.class);
 
-        Definition d = definitionPersistence.findByName("AGENT");
-        System.out.print(d);
-
-        for(Definition definition : definitions) {
+        /*for(Definition definition : definitions) {
             definitionPersistence.save(definition);
         }
-
+*/
+        //Definition d = definitionPersistence.findByName("AGENT");
+        //System.out.print(d);
 
 
 

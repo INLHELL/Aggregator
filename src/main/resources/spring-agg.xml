@@ -1,31 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/cache"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context.xsd">
-
-    <!--<context:component-scan base-package="com.genesys.raa.**"/>-->
-
-
-    <!--&lt;!&ndash; <bean id="bus" class="com">-->
-    <!--<property name="service" ref="serviceBean" />-->
-
-    <!--</beans>&ndash;&gt;-->
-
-    <!--<bean id="configuration" class="com.genesys.raa.agg.Configuration"/>-->
-
-    <!--<bean id="aggFactory" class="com.genesys.raa.agg.tempo.AggFactory">-->
-    <!--<constructor-arg ref="configuration"/>-->
-    <!--</bean>-->
-
-    <!--<bean id="tenantManager" class="com" factory-bean="affFactory" factory-method="getManger" init-method="" />-->
-
-    <!--<bean id="serviceBean" />-->
-    <!---->
-
+        http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location">
@@ -47,7 +28,7 @@
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
                 <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.hbm2ddl.auto">create</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.validator.autoregister_listeners">false</prop>
             </props>
         </property>
@@ -57,7 +38,13 @@
                 <value>com.genesys.raa.agg.model</value>
             </array>
         </property>
-
-
     </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <task:annotation-driven/>
+
 </beans>
