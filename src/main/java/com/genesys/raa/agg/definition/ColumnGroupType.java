@@ -4,7 +4,7 @@ import lombok.Getter;
 
 //@ToString
 @Getter
-public enum ColumnType {
+public enum ColumnGroupType {
     NONE("","NONE"),
     GROUP_BY("$G","GROUP"),
     SUM("$S","SUM"),
@@ -13,7 +13,7 @@ public enum ColumnType {
     private String value;
     private String description;
 
-    ColumnType(String value, String description) {
+    ColumnGroupType(String value, String description) {
         this.value = value;
         this.description = description;
     }

@@ -126,21 +126,24 @@ public class Extractor {
                                 ColumnMetaData columnMetaData = null;
                                 try {
                                     columnName = finalAggregateResultSetMetaData.getColumnName(columnPosition);
-                                    ColumnType columnType = defineColumnType(columnName);
+                                    ColumnGroupType columnType = defineColumnType(columnName);
                                     String columnNameWithoutDescription = columnName.replace(columnType.getValue(), "");
                                     boolean isIndexed = columnNameWithoutDescription.contains(INDEX_MARKER);
                                     columnNameWithoutDescription = columnNameWithoutDescription
                                         .replace(INDEX_MARKER, "");
 
                                     // TODO replace with builder!
-                                    columnMetaData = new ColumnMetaData(columnPosition,
+                                    columnMetaData = new ColumnMetaData(
+                                        columnPosition,
                                         columnNameWithoutDescription,
-                                        finalAggregateResultSetMetaData
-                                            .getColumnLabel(columnPosition),
-                                        finalAggregateResultSetMetaData
-                                            .getColumnType(columnPosition),
-                                        finalAggregateResultSetMetaData
-                                            .getColumnTypeName(columnPosition), columnType, isIndexed);
+                                        finalAggregateResultSetMetaData.getColumnLabel(columnPosition),
+                                        finalAggregateResultSetMetaData.getColumnType(columnPosition),
+                                        finalAggregateResultSetMetaData.getColumnTypeName(columnPosition),
+                                        columnType,
+                                        isIndexed,
+                                        finalAggregateResultSetMetaData.getPrecision(columnPosition),
+                                        finalAggregateResultSetMetaData.getScale(columnPosition)
+                                    );
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
@@ -158,15 +161,15 @@ public class Extractor {
         return nameToSqlAndColumnMetaData;
     }
 
-    private ColumnType defineColumnType(String columnName) {
-        if (columnName.contains(ColumnType.COUNT.getValue()))
-            return ColumnType.COUNT;
-        else if (columnName.contains(ColumnType.GROUP_BY.getValue()))
-            return ColumnType.GROUP_BY;
-        else if (columnName.contains(ColumnType.SUM.getValue()))
-            return ColumnType.SUM;
+    private ColumnGroupType defineColumnType(String columnName) {
+        if (columnName.contains(ColumnGroupType.COUNT.getValue()))
+            return ColumnGroupType.COUNT;
+        else if (columnName.contains(ColumnGroupType.GROUP_BY.getValue()))
+            return ColumnGroupType.GROUP_BY;
+        else if (columnName.contains(ColumnGroupType.SUM.getValue()))
+            return ColumnGroupType.SUM;
         else
-            return ColumnType.NONE;
+            return ColumnGroupType.NONE;
     }
 
     private Map<String, Pair<String, PreparedStatement>> extractStatementFromTemplate(Set<Path>
