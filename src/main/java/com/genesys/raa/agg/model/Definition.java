@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name = "DEFINITION")
+@Entity(name = "RAA_DEFINITION")
 @Access(AccessType.FIELD)
 /*
 @TypeDefs({

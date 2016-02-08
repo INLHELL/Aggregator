@@ -10,7 +10,7 @@ import java.util.Set;
  * Created by vkhaluti on 05-Feb-2016.
  */
 @Data
-//@Entity(name = "GROUP")
+@Entity(name = "RAA_GROUP")
 @Access(AccessType.FIELD)
 public class Group {
 
@@ -28,8 +28,11 @@ public class Group {
     @Column(length = 255)
     private String description;
 
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private Set<GroupLevel> groupLevels;
 
-    // TODO find out how to setup entities relations
-    //@OneToMany(fetch = FetchType.LAZY)
-    //private Set<GroupLevel> groupLevels = new HashSet<>();
+    public void addGroupLevel(GroupLevel groupLevel) {
+        groupLevel.setGroup(this);
+        groupLevels.add(groupLevel);
+    }
 }

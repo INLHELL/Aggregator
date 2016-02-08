@@ -9,7 +9,7 @@ import javax.persistence.Id;
  * Created by SPIDER on 03.02.2016.
  */
 @Data
-@Entity
+@Entity(name = "RAA_JOB_HISTORY")
 public class JobHistory {
     @Id
     private long id;

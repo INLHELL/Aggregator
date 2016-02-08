@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Data
-@Entity
+@Entity(name = "RAA_JOB")
 @Access(AccessType.FIELD)
 public class Job {
 
