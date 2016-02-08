@@ -17,7 +17,7 @@ public class TenantContainer {
 
 	public void plugAggregate(Aggregate aggregate) {
 		// TODO 
-		// new AggJobScheduler(aggregate)
+		// new JobScheduler(aggregate)
 		// new AggJobExecutor(aggregate)
 	}
 
