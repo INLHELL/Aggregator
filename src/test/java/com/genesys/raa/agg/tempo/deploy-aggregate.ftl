@@ -6,13 +6,13 @@ INPUT:
 
 <#list AGG_LEVEL_TABLE_NAMES as TABLE_NAME>
 
-CREATE TABLE ${AGG_LEVEL_TABLE_NAMES[groupLevel.pos]}
+CREATE TABLE ${AGG_LEVEL_TABLE_NAMES[groupLevel.num]}
 AS
-    <#if groupLevel.pos == 0>
+    <#if groupLevel.num == 0>
     ${aggDef.sql}
     <#else>
     SELECT *
-    FROM ${AGG_LEVEL_TABLE_NAMES[groupLevel.pos-1]}
+    FROM ${AGG_LEVEL_TABLE_NAMES[groupLevel.num-1]}
     </#if>
 ;
 
@@ -20,11 +20,11 @@ AS
 
 <#--
 Group group;
-List<GroupLevel> groupLevels; // ordered list by a "pos"-field
+List<GroupLevel> groupLevels; // ordered list by a "num"-field
 Definition aggDef;
 -->
 ${group.code} <#-- major prefix to aggregate table (e.g. DT, that means date_time) -->
-${groupLevel.pos} <#-- number of a group level (order position) -->
+${groupLevel.num} <#-- number of a group level (order position) -->
 ${groupLevel.code} <#-- prefix to aggregate table -->
 
 ${aggDef.name} <#-- aggregate name -->
@@ -40,13 +40,13 @@ ${AGG_LEVEL_TABLE_NAME = ${group.code}_${groupLevel.code}_${aggDef.name}}
 
 <#list groupLevels as groupLevel>
 
-    CREATE TABLE ${AGG_LEVEL_TABLE_NAMES[groupLevel.pos]}
+    CREATE TABLE ${AGG_LEVEL_TABLE_NAMES[groupLevel.num]}
     AS
-    <#if groupLevel.pos == 0>
+    <#if groupLevel.num == 0>
         ${aggDef.sql}
     <#else>
         SELECT *
-        FROM ${AGG_LEVEL_TABLE_NAMES[groupLevel.pos-1]}
+        FROM ${AGG_LEVEL_TABLE_NAMES[groupLevel.num-1]}
     </#if>
     ;
 
