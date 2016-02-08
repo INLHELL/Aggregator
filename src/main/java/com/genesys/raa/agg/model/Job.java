@@ -29,6 +29,10 @@ public class Job {
 	@Column(length = 500)
 	private String lastExecMessage;
 
+	@ManyToOne
+	@JoinColumn(name = "AGGREGATE_ID")
+	Aggregate aggregate;
+
 
 	/*@Column(nullable = false, length = 50, unique = true)
 	private String name;
