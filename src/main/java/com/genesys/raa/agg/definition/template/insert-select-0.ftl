@@ -1,2 +1,2 @@
-INSERT INTO ${group.code}_${groupLevel.code}_${definition.name}
+INSERT INTO ${group.code}_${groupLevels[0].code}_${definition.name}
 ${definition.sql}
