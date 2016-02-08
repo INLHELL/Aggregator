@@ -6,6 +6,7 @@ import com.genesys.raa.agg.model.Definition;
 import com.genesys.raa.agg.persistence.DefinitionPersistence;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import lombok.Setter;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,8 +120,8 @@ public class Extractor {
         Set<ColumnMetaData> columnMetaDatas = Sets.newHashSet();
         for (int columnPosition = 0; columnPosition < columnCount; columnPosition++) {
             String columnName = resultSetMetaData.getColumnName(columnPosition);
-            ColumnType columnType = defineColumnType(columnName);
-            String columnNameWithoutDescription = columnName.replace(columnType.getValue(), "");
+            ColumnGroupType ColumnGroupType = defineColumnGroupType(columnName);
+            String columnNameWithoutDescription = columnName.replace(ColumnGroupType.getValue(), "");
             boolean isIndexed = columnNameWithoutDescription.contains(INDEX_MARKER);
             columnNameWithoutDescription = columnNameWithoutDescription.replace(INDEX_MARKER, "");
 
@@ -128,23 +129,23 @@ public class Extractor {
             ColumnMetaData columnMetaData = new ColumnMetaData(columnPosition,
                 columnNameWithoutDescription, resultSetMetaData.getColumnLabel(columnPosition),
                 resultSetMetaData.getColumnType(columnPosition),
-                resultSetMetaData.getColumnTypeName(columnPosition), columnType, isIndexed,
-                finalAggregateResultSetMetaData.getPrecision(columnPosition),
-                finalAggregateResultSetMetaData.getScale(columnPosition));
+                resultSetMetaData.getColumnTypeName(columnPosition), ColumnGroupType, isIndexed,
+                resultSetMetaData.getPrecision(columnPosition),
+                resultSetMetaData.getScale(columnPosition));
             columnMetaDatas.add(columnMetaData);
         }
         return columnMetaDatas;
     }
 
-    private ColumnType defineColumnType(String columnName) {
-        if (columnName.contains(ColumnType.COUNT.getValue()))
-            return ColumnType.COUNT;
-        else if (columnName.contains(ColumnType.GROUP_BY.getValue()))
-            return ColumnType.GROUP_BY;
-        else if (columnName.contains(ColumnType.SUM.getValue()))
-            return ColumnType.SUM;
+    private ColumnGroupType defineColumnGroupType(String columnName) {
+        if (columnName.contains(ColumnGroupType.COUNT.getValue()))
+            return ColumnGroupType.COUNT;
+        else if (columnName.contains(ColumnGroupType.GROUP_BY.getValue()))
+            return ColumnGroupType.GROUP_BY;
+        else if (columnName.contains(ColumnGroupType.SUM.getValue()))
+            return ColumnGroupType.SUM;
         else
-            return ColumnType.NONE;
+            return ColumnGroupType.NONE;
     }
 
 
