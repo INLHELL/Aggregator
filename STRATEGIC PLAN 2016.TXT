@@ -18,11 +18,13 @@ New aggregator:
     ===>>>> ??? * "A" is written enough intelligent to provide  as clean as possible information about its working status
 
 * A development plan has to be aligned with the Platform Release Plan
-* What about cloud? What about decreasing infrastructure rental costs?
 * What about a platform integration and public API
-* What about GIM with MySql/MariaDB?
 * Would it be possible that "A" will be passed to RA-team for development (ofcourse with A-team common support)?
-
 * What about RA development plans? Does RA have that plans?
-
 * What about A and RA dev. plans alignment?
+
+
+* What about continuous integration and deployment?
+
+
+===>>> * What about cloud? What about decreasing infrastructure rental costs? What about GIM with MySql/MariaDB?

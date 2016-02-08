@@ -6,7 +6,6 @@ import com.genesys.raa.agg.model.Definition;
 import com.genesys.raa.agg.persistence.DefinitionPersistence;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import lombok.Setter;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,7 +128,9 @@ public class Extractor {
             ColumnMetaData columnMetaData = new ColumnMetaData(columnPosition,
                 columnNameWithoutDescription, resultSetMetaData.getColumnLabel(columnPosition),
                 resultSetMetaData.getColumnType(columnPosition),
-                resultSetMetaData.getColumnTypeName(columnPosition), columnType, isIndexed);
+                resultSetMetaData.getColumnTypeName(columnPosition), columnType, isIndexed,
+                finalAggregateResultSetMetaData.getPrecision(columnPosition),
+                finalAggregateResultSetMetaData.getScale(columnPosition));
             columnMetaDatas.add(columnMetaData);
         }
         return columnMetaDatas;

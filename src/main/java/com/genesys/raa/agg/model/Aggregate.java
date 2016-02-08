@@ -1,12 +1,20 @@
 package com.genesys.raa.agg.model;
 
+import lombok.Data;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.sql.PreparedStatement;
 import java.util.List;
 
-//@Entity
+@Data
+@Entity
 public class Aggregate {
 
-	public Aggregate() throws Exception {
+	@Id
+	private long id;
+
+	/*public Aggregate() throws Exception {
 	}
 
 	public Aggregate(String aggregateName, String selectSql,
@@ -16,9 +24,9 @@ public class Aggregate {
 
 	PreparedStatement preparedStatement;
 
-	/**
+	*//**
 	 * @return the preparedStatement
-	 */
+	 *//*
 	public PreparedStatement getPreparedStatement() {
 		return preparedStatement;
 	}
@@ -27,5 +35,5 @@ public class Aggregate {
 		// TODO Auto-generated method stub
 		
 	}
-	
+	*/
 }

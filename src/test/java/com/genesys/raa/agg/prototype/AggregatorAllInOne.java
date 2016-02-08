@@ -3,7 +3,7 @@ package com.genesys.raa.agg.prototype;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.genesys.raa.agg.StandaloneAggregatorMain;
-import com.genesys.raa.agg.definition.ColumnType;
+import com.genesys.raa.agg.definition.ColumnGroupType;
 import com.genesys.raa.agg.definition.ColumnMetaData;
 import com.genesys.raa.agg.model.Definition;
 import com.genesys.raa.agg.persistence.DefinitionPersistence;
@@ -93,7 +93,7 @@ public class AggregatorAllInOne {
             CREATE AGGREGATE TABLE(S)
              */
             Set<ColumnMetaData> columnMetaDatas = new HashSet<>();
-            ListMultimap<ColumnType, ColumnMetaData> columnGroups = LinkedListMultimap.create();
+            ListMultimap<ColumnGroupType, ColumnMetaData> columnGroups = LinkedListMultimap.create();
 
 
             String aggSelectQuery = new String(Files.readAllBytes(aggregateSqlTemplate));
@@ -105,18 +105,18 @@ public class AggregatorAllInOne {
 
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
                 String columnName = metaData.getColumnName(i);
-                ColumnType columnGroupType = ColumnType.NONE;
-                if (columnName.contains(ColumnType.COUNT.getValue())) {
-                    columnName = columnName.replace(ColumnType.COUNT.getValue(), "");
-                    columnGroupType = ColumnType.COUNT;
+                ColumnGroupType columnGroupType = ColumnGroupType.NONE;
+                if (columnName.contains(ColumnGroupType.COUNT.getValue())) {
+                    columnName = columnName.replace(ColumnGroupType.COUNT.getValue(), "");
+                    columnGroupType = ColumnGroupType.COUNT;
                 }
-                if (columnName.contains(ColumnType.SUM.getValue())) {
-                    columnName = columnName.replace(ColumnType.SUM.getValue(), "");
-                    columnGroupType = ColumnType.SUM;
+                if (columnName.contains(ColumnGroupType.SUM.getValue())) {
+                    columnName = columnName.replace(ColumnGroupType.SUM.getValue(), "");
+                    columnGroupType = ColumnGroupType.SUM;
                 }
-                if (columnName.contains(ColumnType.GROUP_BY.getValue())) {
-                    columnName = columnName.replace(ColumnType.GROUP_BY.getValue(), "");
-                    columnGroupType = ColumnType.GROUP_BY;
+                if (columnName.contains(ColumnGroupType.GROUP_BY.getValue())) {
+                    columnName = columnName.replace(ColumnGroupType.GROUP_BY.getValue(), "");
+                    columnGroupType = ColumnGroupType.GROUP_BY;
                 }
                 boolean isIndexed = columnName.contains("$I");
                 columnName = columnName.replace("$I", "");
@@ -125,7 +125,7 @@ public class AggregatorAllInOne {
                 System.out.println(metaData.getColumnType(i));
 
                 ColumnMetaData columnMetaData = new ColumnMetaData(i, columnName, metaData.getColumnLabel(i), metaData
-                        .getColumnType(i), metaData.getColumnTypeName(i), columnGroupType, isIndexed);
+                        .getColumnType(i), metaData.getColumnTypeName(i), columnGroupType, isIndexed, metaData.getPrecision(i), metaData.getScale(i));
                 columnMetaDatas.add(columnMetaData);
 
                 columnGroups.put(columnGroupType, columnMetaData);
