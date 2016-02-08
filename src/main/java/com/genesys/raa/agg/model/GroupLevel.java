@@ -16,6 +16,10 @@ public class GroupLevel {
     @SequenceGenerator(name="SEQ_GEN", sequenceName="AGG_GROUP_LEVEL_SEQ")
     private long id;
 
+    @ManyToOne
+    @JoinColumn(name = "GROUP_ID")
+    private Group group;
+
     @Column(name = "LEVEL_NUM")
     private int levelNum;
 
@@ -25,10 +29,9 @@ public class GroupLevel {
     @Column(length = 50)
     private String name;
 
+    private String levelTable;
+    private String levelColumn;
+
     @Column(length = 255)
     private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "GROUP_ID")
-    private Group group;
 }
