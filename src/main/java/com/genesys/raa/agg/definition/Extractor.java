@@ -6,6 +6,7 @@ import com.genesys.raa.agg.model.Definition;
 import com.genesys.raa.agg.persistence.DefinitionPersistence;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import lombok.Setter;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Created by SPIDER on 03.02.2016.
@@ -40,60 +40,54 @@ public class Extractor {
     private String aggregateTemplatesDir;
 
     @Autowired
+    @Setter
     private Deployer deployer;
 
     @Autowired
+    @Setter
     private DataSource dataSource;
 
     @Autowired
+    @Setter
     private DefinitionPersistence definitionPersistence;
 
     @Autowired
+    @Setter
     ObjectMapper mapper;
 
 
     @PostConstruct
     private void init() throws IOException {
-        final Set<Path> aggregateTemplatePaths = Files.list(new File(aggregateTemplatesDir).toPath())
-            .collect(Collectors.toSet());
-        final Map<String, Pair<String, PreparedStatement>> nameToSqlAndStatement = this
-            .extractStatementFromTemplate(aggregateTemplatePaths);
-        final Map<String, Pair<String, Set<ColumnMetaData>>> nameToSqlAndColumnMetaData = this
-            .extractColumnMetaDataFromStatement(nameToSqlAndStatement);
-//        final Map<String, Pair<String, Set<ParameterMetaData>>> nameToSqlAndColumnMetaData = this
-// .extractParameterMetaDataFromStatement(nameToSqlAndStatement);
-        for (Definition definition : this.buildDefinitionBasedOnMetaData(nameToSqlAndColumnMetaData)) {
-            Definition existingDefinition = definitionPersistence.findByName(definition.getName());
+        final Set<Path> aggregateTemplatePaths = Files.list(new File(aggregateTemplatesDir).toPath()).collect(Collectors.toSet());
+        final Map<String, Pair<String, PreparedStatement>> nameToSqlAndStatement = this.extractStatementFromTemplate(aggregateTemplatePaths);
+        final Map<String, Pair<String, Set<ColumnMetaData>>> nameToSqlAndColumnMetaData = this.extractColumnMetaDataFromStatement(nameToSqlAndStatement);
+        this.saveIfNew(nameToSqlAndColumnMetaData);
+    }
+
+    private void saveIfNew(Map<String, Pair<String, Set<ColumnMetaData>>> nameToSqlAndColumnMetaData) {
+        for (final Definition definition : this.buildDefinitionBasedOnMetaData(nameToSqlAndColumnMetaData)) {
+            final Definition existingDefinition = definitionPersistence.findByName(definition.getName());
             if (existingDefinition != null) {
                 definition.setId(existingDefinition.getId());
             }
             definitionPersistence.save(definition);
         }
-
     }
 
-    private Set<Definition> buildDefinitionBasedOnMetaData(Map<String, Pair<String, Set<ColumnMetaData>>>
-                                                               nameToSqlAndMetaData) {
+    private Set<Definition> buildDefinitionBasedOnMetaData(Map<String, Pair<String, Set<ColumnMetaData>>> nameToSqlAndMetaData) {
         Set<Definition> definitions = Sets.newHashSet();
         nameToSqlAndMetaData.entrySet()
-            .forEach((aggregateNameColumnsMetaData)
-//                -> Errors.rethrow().wrap(()
-                    -> {
-                    final String aggregateName = aggregateNameColumnsMetaData.getKey();
-                    final Collection<ColumnMetaData> columnsMetaData = aggregateNameColumnsMetaData.getValue()
-                        .getRight();
-                    final String aggregateQueryString = aggregateNameColumnsMetaData.getValue().getLeft();
-                    try {
-                        definitions
-                            .add(new Definition(aggregateName, aggregateQueryString, mapper
-                                .writerWithDefaultPrettyPrinter()
-                                .writeValueAsString(columnsMetaData)));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
+            .forEach((aggregateNameColumnsMetaData) -> {
+                final String aggregateName = aggregateNameColumnsMetaData.getKey();
+                final Collection<ColumnMetaData> columnsMetaData = aggregateNameColumnsMetaData.getValue().getRight();
+                final String aggregateQueryString = aggregateNameColumnsMetaData.getValue().getLeft();
+                try {
+                    final String sqlMetaData = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(columnsMetaData);
+                    definitions.add(new Definition(aggregateName, aggregateQueryString, sqlMetaData));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
                 }
-//            )
-            );
+            });
         return definitions;
     }
 
@@ -103,65 +97,47 @@ public class Extractor {
     and create definitions (Definition entity class)
     and populate to database to DEFINITION table
      */
-    private Map<String, Pair<String, Set<ColumnMetaData>>> extractColumnMetaDataFromStatement(Map<String,
-        Pair<String, PreparedStatement>> nameToSqlAndStatement) {
+    private Map<String, Pair<String, Set<ColumnMetaData>>> extractColumnMetaDataFromStatement(Map<String, Pair<String, PreparedStatement>>
+                                                                                                  nameToSqlAndStatement) {
         Map<String, Pair<String, Set<ColumnMetaData>>> nameToSqlAndColumnMetaData = Maps.newHashMap();
-        nameToSqlAndStatement
-            .entrySet()
-            .forEach(
-                (aggregateNamePreparedStatement) ->
-
-//                    Errors.rethrow().wrap(() ->
-                {
-                    ResultSetMetaData aggregateResultSetMetaData = null;
-                    try {
-                        aggregateResultSetMetaData = aggregateNamePreparedStatement
-                            .getValue().getRight().getMetaData();
-
-                        final int columnCount = aggregateResultSetMetaData.getColumnCount();
-                        final ResultSetMetaData finalAggregateResultSetMetaData = aggregateResultSetMetaData;
-                        Set<ColumnMetaData> columnMetaDatas = IntStream.range(1, columnCount + 1).mapToObj
-                            (columnPosition -> {
-                                String columnName = null;
-                                ColumnMetaData columnMetaData = null;
-                                try {
-                                    columnName = finalAggregateResultSetMetaData.getColumnName(columnPosition);
-                                    ColumnGroupType columnType = defineColumnType(columnName);
-                                    String columnNameWithoutDescription = columnName.replace(columnType.getValue(), "");
-                                    boolean isIndexed = columnNameWithoutDescription.contains(INDEX_MARKER);
-                                    columnNameWithoutDescription = columnNameWithoutDescription
-                                        .replace(INDEX_MARKER, "");
-
-                                    // TODO replace with builder!
-                                    columnMetaData = new ColumnMetaData(
-                                        columnPosition,
-                                        columnNameWithoutDescription,
-                                        finalAggregateResultSetMetaData.getColumnLabel(columnPosition),
-                                        finalAggregateResultSetMetaData.getColumnType(columnPosition),
-                                        finalAggregateResultSetMetaData.getColumnTypeName(columnPosition),
-                                        columnType,
-                                        isIndexed,
-                                        finalAggregateResultSetMetaData.getPrecision(columnPosition),
-                                        finalAggregateResultSetMetaData.getScale(columnPosition)
-                                    );
-                                } catch (SQLException e) {
-                                    e.printStackTrace();
-                                }
-                                return columnMetaData;
-                            }).collect(Collectors.toSet());
-                        final String aggregateName = aggregateNamePreparedStatement.getKey();
-                        final String aggregateQueryString = aggregateNamePreparedStatement.getValue().getLeft();
-                        nameToSqlAndColumnMetaData.put(aggregateName, Pair.of(aggregateQueryString, columnMetaDatas));
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-//            )
-            );
+        nameToSqlAndStatement.entrySet().forEach((aggregateNamePreparedStatement) -> {
+            try {
+                ResultSetMetaData aggregateResultSetMetaData = aggregateNamePreparedStatement.getValue().getRight().getMetaData();
+                final int columnCount = aggregateResultSetMetaData.getColumnCount();
+                final ResultSetMetaData resultSetMetaData = aggregateResultSetMetaData;
+                final Set<ColumnMetaData> columnMetaDatas = collectColumnMetaDatas(columnCount, resultSetMetaData);
+                final String aggregateName = aggregateNamePreparedStatement.getKey();
+                final String aggregateQueryString = aggregateNamePreparedStatement.getValue().getLeft();
+                nameToSqlAndColumnMetaData.put(aggregateName, Pair.of(aggregateQueryString, columnMetaDatas));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
         return nameToSqlAndColumnMetaData;
     }
 
-    private ColumnGroupType defineColumnType(String columnName) {
+    private Set<ColumnMetaData> collectColumnMetaDatas(int columnCount, ResultSetMetaData resultSetMetaData) throws SQLException {
+        Set<ColumnMetaData> columnMetaDatas = Sets.newHashSet();
+        for (int columnPosition = 0; columnPosition < columnCount; columnPosition++) {
+            String columnName = resultSetMetaData.getColumnName(columnPosition);
+            ColumnGroupType ColumnGroupType = defineColumnGroupType(columnName);
+            String columnNameWithoutDescription = columnName.replace(ColumnGroupType.getValue(), "");
+            boolean isIndexed = columnNameWithoutDescription.contains(INDEX_MARKER);
+            columnNameWithoutDescription = columnNameWithoutDescription.replace(INDEX_MARKER, "");
+
+            // TODO replace with builder!
+            ColumnMetaData columnMetaData = new ColumnMetaData(columnPosition,
+                columnNameWithoutDescription, resultSetMetaData.getColumnLabel(columnPosition),
+                resultSetMetaData.getColumnType(columnPosition),
+                resultSetMetaData.getColumnTypeName(columnPosition), ColumnGroupType, isIndexed,
+                resultSetMetaData.getPrecision(columnPosition),
+                resultSetMetaData.getScale(columnPosition));
+            columnMetaDatas.add(columnMetaData);
+        }
+        return columnMetaDatas;
+    }
+
+    private ColumnGroupType defineColumnGroupType(String columnName) {
         if (columnName.contains(ColumnGroupType.COUNT.getValue()))
             return ColumnGroupType.COUNT;
         else if (columnName.contains(ColumnGroupType.GROUP_BY.getValue()))
@@ -172,29 +148,24 @@ public class Extractor {
             return ColumnGroupType.NONE;
     }
 
-    private Map<String, Pair<String, PreparedStatement>> extractStatementFromTemplate(Set<Path>
-                                                                                          aggregateTemplatePaths) {
-        final Map<String, Pair<String, PreparedStatement>> aggregateNamePreparedStatementMap = Maps
-            .newHashMapWithExpectedSize(20);
 
-        aggregateTemplatePaths.forEach(
-            aggregateTemplatePath -> {
-                final String aggregateTemplatePathAsString = aggregateTemplatePath.toString();
-                if (FilenameUtils.getExtension(aggregateTemplatePathAsString).equalsIgnoreCase(SQL_EXTENSION)) {
-                    final String aggregateTemplateBaseName = FilenameUtils.getBaseName(aggregateTemplatePathAsString);
-                    try {
-                        String aggregateQueryString = new String(Files.readAllBytes(aggregateTemplatePath));
-                        PreparedStatement aggregateStatement = dataSource.getConnection().prepareStatement
-                            (aggregateQueryString);
-                        aggregateNamePreparedStatementMap
-                            .put(aggregateTemplateBaseName, Pair.of(aggregateQueryString, aggregateStatement));
-                    } catch (IOException | SQLException e) {
-                        e.printStackTrace();
-                    }
+    private Map<String, Pair<String, PreparedStatement>> extractStatementFromTemplate(Set<Path> aggregateTemplatePaths) {
+        final Map<String, Pair<String, PreparedStatement>> aggregateNamePreparedStatementMap = Maps.newHashMapWithExpectedSize(20);
+        aggregateTemplatePaths.forEach(aggregateTemplatePath -> {
+            final String aggregateTemplatePathAsString = aggregateTemplatePath.toString();
+            if (FilenameUtils.getExtension(aggregateTemplatePathAsString).equalsIgnoreCase(SQL_EXTENSION)) {
+                final String aggregateTemplateBaseName = FilenameUtils.getBaseName(aggregateTemplatePathAsString);
+                try {
+                    String aggregateQueryString = new String(Files.readAllBytes(aggregateTemplatePath));
+                    PreparedStatement aggregateStatement = dataSource.getConnection().prepareStatement(aggregateQueryString);
+                    aggregateNamePreparedStatementMap.put(aggregateTemplateBaseName, Pair.of(aggregateQueryString, aggregateStatement));
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
                 }
             }
-        );
+        });
         return aggregateNamePreparedStatementMap;
     }
+
 
 }
